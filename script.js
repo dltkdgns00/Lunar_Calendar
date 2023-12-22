@@ -1,5 +1,16 @@
+fetch('https://raw.githubusercontent.com/dltkdgns00/Lunar_Calendar/main/README.md')
+  .then(response => response.text())
+  .then(markdown =>
+  {
+    const htmlContent = marked.parse(markdown);
+    document.getElementById('readme-content').innerHTML = htmlContent;
+  })
+  .catch(err => console.error(err));
+
 document.addEventListener('DOMContentLoaded', function ()
 {
+  var currentYear = new Date().getFullYear();
+
   const calendar = new KoreanLunarCalendar();
 
   var form = document.getElementById('lunarDateForm');
@@ -10,17 +21,100 @@ document.addEventListener('DOMContentLoaded', function ()
     event.preventDefault();
 
     // 입력된 년도, 월, 일 값을 가져옴
-    var year = parseInt(document.getElementById('year').value);
     var month = parseInt(document.getElementById('month').value);
     var day = parseInt(document.getElementById('day').value);
+    var nYear = parseInt(document.getElementById('nYear').value);
+    var yearStart = currentYear;
+    var yearEnd = currentYear + nYear;
 
-    // 입력된 년도, 월, 일 값을 콘솔에 출력
-    console.log(year, month, day);
+    var eventTitle = document.getElementById('eventTitle').value;
+    var eventDescription = document.getElementById('eventDescription').value;
 
-    calendar.setLunarDate(year, month, day);
+    var years = [];
+    var solarBirthdays = [];
+    var events = [];
 
-    resultText = calendar.getSolarCalendar();
+    eventTitle = String(eventTitle);
+    eventDescription = String(eventDescription);
 
-    console.log(resultText);
+    for (var i = yearStart; i <= yearEnd; i++)
+    {
+      years.push(i);
+    }
+
+    console.log(years);
+
+
+    years.forEach(year =>
+    {
+      calendar.setLunarDate(year, month, day);
+      solarBirthdays.push(calendar.getSolarCalendar());
+    });
+
+    console.log(solarBirthdays);
+
+    for (var i = 0; i < solarBirthdays.length; i++)
+    {
+      var solarBirthday = solarBirthdays[i];
+      var solarYear = solarBirthday.year;
+      var solarMonth = solarBirthday.month;
+      var solarDay = solarBirthday.day;
+
+      if (solarMonth < 10)
+      {
+        solarMonth = '0' + solarMonth;
+      }
+      if (solarDay < 10)
+      {
+        solarDay = '0' + solarDay;
+      }
+
+      console.log(String(solarYear) + String(solarMonth) + String(solarDay));
+
+      events.push({
+        title: eventTitle,
+        startDate: String(solarYear) + String(solarMonth) + String(solarDay),
+        endDate: String(solarYear) + String(solarMonth) + String(solarDay),
+        description: eventDescription
+      });
+    }
+
+    addEventsToCalendar(events);
   });
+
+  function addEventsToCalendar(events)
+  {
+    var icsContent = createMultipleEventsICS(events);
+    var icsFileURL = createICSFileURL(icsContent);
+
+    window.open(icsFileURL);
+  }
 });
+
+function createMultipleEventsICS(events)
+{
+  var icsEvents = events.map(function (event)
+  {
+    return [
+      "BEGIN:VEVENT",
+      "SUMMARY:" + event.title,
+      "DTSTART;VALUE=DATE:" + event.startDate,
+      "DTEND;VALUE=DATE:" + event.endDate,
+      "DESCRIPTION:" + event.description,
+      "END:VEVENT"
+    ].join("\n");
+  });
+
+  return [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    ...icsEvents,
+    "END:VCALENDAR"
+  ].join("\n");
+}
+
+function createICSFileURL(data)
+{
+  var encodedData = encodeURIComponent(data);
+  return "data:text/calendar;charset=utf8," + encodedData;
+}
