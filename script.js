@@ -48,7 +48,7 @@ function renderHome()
 
   app.innerHTML = `
     <div>
-      <pre id="readme-content"></pre>
+      <div id="readme-content"></div>
     </div>
     <div id="home">
       <div class="form-container">
