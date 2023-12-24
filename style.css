@@ -1,28 +1,71 @@
+html {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
 body {
-	font-family: Arial, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 	background-color: #f0f0f0;
 	margin: 0;
-	padding: 20px;
+	width: 100%;
+	height: 100%;
+}
+
+#app {
+	max-width: 500px;
+	margin: auto;
+	padding: auto;
+	padding-top: 8px;
+	background-color: white;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	width: 100%;
+	height: 100%;
+}
+
+#home {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#nameForm {
+	padding-top: 16px;
+	justify-content: space-between;
 }
 
 .form-container {
-	background-color: white;
-	max-width: 500px;
-	margin: auto;
-	padding: 20px;
-	border-radius: 5px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
 }
 
 form {
 	display: flex;
 	flex-direction: column;
+	width: 75%;
 }
 
 label,
 input,
 button {
 	margin-bottom: 10px;
+}
+
+label {
+	font-size: 1.3em;
+}
+
+input {
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+input::placeholder {
+	font-size: 1.2em;
 }
 
 button {
@@ -32,6 +75,7 @@ button {
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
+	font-size: 0.8em;
 }
 
 button:hover {
@@ -45,4 +89,16 @@ code {
 	overflow: auto;
 	font-family: Hack, monospace;
 	font-size: 0.8em; /* 상위 요소의 글씨 크기의 80% */
+	white-space: pre-wrap;
+	margin: 8px;
+}
+
+@media (min-width: 500px) {
+	body {
+		padding: 20px;
+	}
+
+	#app {
+		border-radius: 5px;
+	}
 }

@@ -6,28 +6,16 @@
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hack-font/3.3.0/web/hack.css" />
 
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
   <script src="https://cdn.jsdelivr.net/npm/korean-lunar-calendar/dist/korean-lunar-calendar.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="./script.js"></script>
 </head>
 
 <body>
-  <div class="form-container">
-    <h1>LunarCalendar</h1>
-    <form id="lunarDateForm">
-      <label for="lunarBirthday">음력 생년월일</label>
-      <input id="lunarBirthday" type="date">
-
-      <label for="nYear">향후 몇년간의 생일을 저장하고 싶은가요?</label>
-      <input id="nYear" type="number" min="1" max="100" value="1">
-      <button type="submit">이벤트 생성하기</button>
-    </form>
-  </div>
-  <br>
-  <div>
-    <h2>사용 설명서</h2>
-    <pre id="readme-content"></pre>
-  </div>
+  <div id="app"></div>
+  <script src="./script.js"></script>
 </body>
 
 </html>
