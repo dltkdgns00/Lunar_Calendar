@@ -14,7 +14,7 @@
 ## 링크
 
 -   [Github Repository](https://github.com/dltkdgns00/Lunar_Calendar)
--   [음력 생일 캘린더](https://www.sldev.kr/Lunar_Calendar)
+-   [음력 생일 캘린더](https://sldev.kr/Lunar_Calendar)
 
 ## 라이선스
 
