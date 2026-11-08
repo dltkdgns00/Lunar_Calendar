@@ -1,25 +1,46 @@
-# 음력 생일 캘린더
+# 음력 생일 캘린더 (Lunar Calendar) 🌙
 
-## 소개
+부모님과 가족의 음력 생일을 기억하기 어려운 분들을 위한 웹 서비스입니다.  
+매년 달라지는 음력 생일을 N년치 양력으로 자동 계산하여 **Google 캘린더, Apple 캘린더, Outlook** 등 표준 캘린더 앱에 한 번에 등록할 수 있는 `.ics` 파일을 생성합니다.
 
-부모님의 음력 생일을 기억하기 힘들지만 써드파티 캘린더를 사용하기는 싫은 분들을 위한 웹 어플리케이션입니다.
+👉 **[음력 생일 캘린더 바로가기](https://dltkdgns00.github.io/Lunar_Calendar/)**
 
-## 사용법
+---
 
-1. 생일을 저장하고 싶은 사람의 이름을 입력합니다.
-2. 음력 생일과 저장하고 싶은 햇수를 입력합니다.
-3. 이벤트 제목과 설명을 입력합니다.
-4. 캘린더에 저장하기 버튼을 클릭!
+## ✨ 주요 특징 및 기능
 
-## 링크
+- **음력 전용 날짜 선택기**: 양력 달력 입력기의 한계를 넘어 음력 2월 30일 등 모든 음력 날짜를 손쉽게 입력할 수 있습니다.
+- **윤달(Leap Month) 지원**: 윤달에 태어난 생일도 정확하게 계산합니다.
+- **소월(29일) 자동 보정**: 음력 30일이 없는 해에는 그 달의 마지막 날인 29일로 일정을 자동 보정하여 누락 없이 챙길 수 있습니다.
+- **연도별 양력 일정 실시간 미리보기**: 변환된 N년치의 양력 날짜, 요일, 세는나이(환갑·칠순·팔순 강조)를 브라우저에서 바로 확인 가능합니다.
+- **캘린더 알림(VALARM) 지원**: 당일 오전 9시, 1일 전, 3일 전 등 원하는 시점에 알림이 울리도록 설정할 수 있습니다.
+- **RFC 5545 표준 준수**: 모바일(iOS, Android) 및 데스크톱 캘린더와 완벽히 호환되는 고품질 iCalendar 규격을 준수합니다.
+- **No-Build & 초경량**: 별도의 무거운 프레임워크나 빌드 과정 없이 순수 웹 표준(Vanilla JS ES Modules, 모던 CSS)으로 제작되어 빠르고 가볍습니다.
 
--   [Github Repository](https://github.com/dltkdgns00/Lunar_Calendar)
--   [음력 생일 캘린더](https://sldev.kr/Lunar_Calendar)
+---
 
-## 라이선스
+## 📖 사용 방법
 
-MIT License
+1. **[웹사이트](https://dltkdgns00.github.io/Lunar_Calendar/)**에 접속합니다.
+2. 생일 대상자의 **이름**과 **음력 생년월일**을 선택합니다. (출생 연도를 입력하면 나이가 자동 계산됩니다.)
+3. 저장할 **기간(예: 10년치)**과 **알림 설정**을 선택합니다.
+4. `양력 날짜 미리보기`로 변환된 일정을 확인한 뒤, `캘린더(.ics) 다운로드` 버튼을 누릅니다.
+5. 다운로드된 `.ics` 파일을 열어 캘린더 앱에 일정을 추가합니다.
+   - **아이폰 / Mac**: 다운로드된 파일을 탭하고 **'모두 추가'**를 선택합니다.
+   - **갤럭시 / 안드로이드**: 파일을 열어 기본 캘린더 앱에서 일정 가져오기를 완료합니다.
+   - **Google 캘린더 (PC)**: 설정 &gt; [가져오기 및 내보내기] &gt; 다운로드된 `.ics` 파일을 업로드합니다.
 
-## 개발자
+---
 
--   [dltkdgns00](https://github.com/dltkdgns00)
+## 🛠 기술 스택
+
+- **Frontend**: HTML5, Modern CSS (CSS Variables, 다크 모드 대응, 반응형), Vanilla JavaScript (ES Modules)
+- **Library**: [korean-lunar-calendar](https://github.com/usingsky/korean-lunar-calendar)
+- **Typography**: [Pretendard](https://github.com/orioncactus/pretendard)
+- **Hosting**: GitHub Pages
+
+---
+
+## 📄 라이선스
+
+MIT License © [SangHoon Lee (dltkdgns00)](https://github.com/dltkdgns00)

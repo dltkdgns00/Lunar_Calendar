@@ -1,21 +1,269 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 
 <head>
-  <title>LunarCalendar</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hack-font/3.3.0/web/hack.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>음력 생일 캘린더 🌙 | Lunar Calendar</title>
+  
+  <meta name="description" content="매년 바뀌는 부모님과 가족의 음력 생일을 계산하여 구글, 애플, 아웃룩 캘린더에 한 번에 등록하는 iCalendar(.ics) 생성기">
+  
+  <!-- Open Graph (카카오톡, 페이스북 등 링크 미리보기) -->
+  <meta property="og:title" content="음력 생일 캘린더 🌙">
+  <meta property="og:description" content="매년 달라지는 음력 생일을 Google / Apple 캘린더에 원클릭으로 한 번에 등록하세요.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dltkdgns00.github.io/Lunar_Calendar/">
+  <meta property="og:image" content="https://dltkdgns00.github.io/Lunar_Calendar/og-image.png">
+  <meta property="og:image:width" content="800">
+  <meta property="og:image:height" content="400">
+  <meta property="og:site_name" content="음력 생일 캘린더">
 
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="음력 생일 캘린더 🌙">
+  <meta name="twitter:description" content="매년 달라지는 음력 생일을 Google / Apple 캘린더에 원클릭으로 한 번에 등록하세요.">
+  <meta name="twitter:image" content="https://dltkdgns00.github.io/Lunar_Calendar/og-image.png">
 
+  <!-- 파비콘 (달 모양 SVG) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
+
+  <!-- Pretendard 웹폰트 -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  
+  <!-- 스타일시트 -->
+  <link rel="stylesheet" href="./style.css">
+
+  <!-- 음력 변환 라이브러리 -->
   <script src="https://cdn.jsdelivr.net/npm/korean-lunar-calendar/dist/korean-lunar-calendar.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 
 <body>
-  <div id="app"></div>
-  <script src="./script.js"></script>
+  <div class="layout-container">
+    <header class="header">
+      <div class="logo-area">
+        <span class="logo-icon">🌙</span>
+        <h1 class="logo-title">음력 생일 캘린더</h1>
+      </div>
+      <p class="header-desc">
+        매년 달라지는 음력 생일을 N년치 양력으로 자동 계산하여<br>
+        <strong>Google 캘린더, Apple 캘린더, Outlook</strong>에 한 번에 등록하세요.
+      </p>
+    </header>
+
+    <main class="main-card">
+      <!-- 공유 링크로 접속 시 나타나는 즉시 저장 배너 (평소에는 hidden) -->
+      <div id="sharedBanner" class="shared-banner hidden">
+        <div class="shared-banner-icon">🎂</div>
+        <div class="shared-banner-content">
+          <div class="shared-banner-title" id="sharedBannerTitle">공유받은 음력 생일이 도착했습니다!</div>
+          <div class="shared-banner-sub" id="sharedBannerSub">캘린더 일정이 자동으로 다운로드됩니다. 아래 버튼을 눌러 바로 저장할 수도 있습니다.</div>
+        </div>
+        <button type="button" id="bannerDownloadBtn" class="btn btn-primary banner-btn">
+          📥 캘린더에 바로 저장
+        </button>
+      </div>
+
+      <form id="lunarForm" novalidate>
+        <!-- 1. 대상자 정보 -->
+        <section class="form-section">
+          <h2 class="section-title">1. 누구의 생일인가요?</h2>
+          <div class="form-group">
+            <label for="personName" class="form-label">이름 <span class="required">*</span></label>
+            <input 
+              type="text" 
+              id="personName" 
+              class="form-input" 
+              placeholder="예: 어머니, 아버지, 홍길동" 
+              required
+              maxlength="20"
+              autocomplete="off"
+            >
+          </div>
+        </section>
+
+        <!-- 2. 음력 생일 선택기 -->
+        <section class="form-section">
+          <h2 class="section-title">2. 음력 생일을 선택해주세요</h2>
+          <div class="date-select-grid">
+            <div class="form-group">
+              <label for="birthYear" class="form-label">출생 연도 (선택)</label>
+              <input 
+                type="number" 
+                id="birthYear" 
+                class="form-input" 
+                placeholder="예: 1965 (나이 표시용)" 
+                min="1900" 
+                max="2100"
+              >
+            </div>
+            <div class="form-group">
+              <label for="lunarMonth" class="form-label">음력 월 <span class="required">*</span></label>
+              <select id="lunarMonth" class="form-select" required>
+                <!-- JS에서 1~12월 자동 렌더링 -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="lunarDay" class="form-label">음력 일 <span class="required">*</span></label>
+              <select id="lunarDay" class="form-select" required>
+                <!-- JS에서 1~30일 자동 렌더링 -->
+              </select>
+            </div>
+          </div>
+
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="isLeapMonth">
+              <span>윤달 생일입니다</span>
+            </label>
+            <label class="checkbox-label" title="음력 30일이 없는 해에는 29일(그 달의 마지막 날)로 자동 지정합니다.">
+              <input type="checkbox" id="fallbackTo29th" checked>
+              <span>작은달(30일 부재 시)에는 29일로 자동 지정</span>
+            </label>
+          </div>
+
+          <!-- 실시간 양력 변환 확인 카드 -->
+          <div id="instantSolarBox" class="instant-solar-box">
+            <!-- JS에서 실시간 렌더링 -->
+          </div>
+        </section>
+
+        <!-- 3. 일정 옵션 -->
+        <section class="form-section">
+          <h2 class="section-title">3. 저장 기간 및 알림 설정</h2>
+          <div class="options-grid">
+            <div class="form-group">
+              <label for="startYear" class="form-label">시작 연도</label>
+              <input 
+                type="number" 
+                id="startYear" 
+                class="form-input" 
+                min="1950" 
+                max="2050" 
+                required
+              >
+            </div>
+            <div class="form-group">
+              <label for="countYears" class="form-label">저장할 기간 (년수)</label>
+              <select id="countYears" class="form-select">
+                <option value="5">5년치</option>
+                <option value="10" selected>10년치 (추천)</option>
+                <option value="20">20년치</option>
+                <option value="30">30년치</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="alarmType" class="form-label">캘린더 알림</label>
+              <select id="alarmType" class="form-select">
+                <option value="1_day_before" selected>1일 전 알림 (추천)</option>
+                <option value="day_of">당일 오전 9시 알림</option>
+                <option value="3_days_before">3일 전 알림</option>
+                <option value="none">알림 없음</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 고급 설정 토글 (제목 / 설명) -->
+          <details class="advanced-details">
+            <summary class="advanced-summary">이벤트 제목 및 설명 커스텀</summary>
+            <div class="advanced-content">
+              <div class="form-group">
+                <label for="titleTemplate" class="form-label">이벤트 제목 커스텀</label>
+                <input 
+                  type="text" 
+                  id="titleTemplate" 
+                  class="form-input" 
+                  placeholder="비워두시면 이름에 맞춰 자동 생성됩니다 (예: 어머니님의 음력 생일)"
+                >
+                <small class="help-text">직접 입력 시 해당 문구로 저장됩니다. (<code>{name}</code> 이름, <code>{age}</code> 나이 치환 지원)</small>
+              </div>
+              <div class="form-group">
+                <label for="eventDescription" class="form-label">이벤트 설명 문구</label>
+                <textarea 
+                  id="eventDescription" 
+                  class="form-textarea" 
+                  rows="2" 
+                  placeholder="캘린더 일정 세부 메모에 들어갈 내용입니다. (비워두면 기본 설명 적용)"
+                ></textarea>
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <!-- 버튼 영역 -->
+        <div class="action-buttons-grid">
+          <button type="submit" id="downloadBtn" class="btn btn-primary">
+            <span class="btn-icon">📅</span> 캘린더(.ics) 다운로드
+          </button>
+          <button type="button" id="previewBtn" class="btn btn-secondary">
+            <span class="btn-icon">👁️</span> <span id="previewBtnText">양력 날짜 미리보기</span>
+          </button>
+          <button type="button" id="shareBtn" class="btn btn-secondary">
+            <span class="btn-icon">🔗</span> 공유하기
+          </button>
+          <button type="button" id="resetBtn" class="btn btn-ghost" title="입력 내용 초기화">
+            <span class="btn-icon">⟲</span> 새로 입력
+          </button>
+        </div>
+      </form>
+
+      <!-- 4. 결과 미리보기 영역 (기본 숨김, 버튼 클릭 시 토글) -->
+      <section id="previewSection" class="preview-section hidden">
+        <div class="preview-header">
+          <h3 class="preview-title" id="previewSummaryTitle">양력 변환 일정 미리보기</h3>
+          <div class="preview-badges">
+            <span class="live-indicator"><span class="live-dot"></span> 실시간 반영</span>
+            <span class="badge" id="previewCountBadge">10개 일정</span>
+            <button type="button" id="closePreviewBtn" class="btn-close-preview" title="미리보기 접기">✕ 닫기</button>
+          </div>
+        </div>
+        <p class="preview-subdesc">
+          다운로드된 <code>.ics</code> 파일을 열면 기본 캘린더 앱에 아래 일정들이 한 번에 등록됩니다.
+        </p>
+
+        <div class="table-wrapper">
+          <table class="preview-table">
+            <thead>
+              <tr>
+                <th>연도</th>
+                <th>양력 생일</th>
+                <th>요일</th>
+                <th>나이</th>
+                <th>비고</th>
+              </tr>
+            </thead>
+            <tbody id="previewTableBody">
+              <!-- JS에서 동적 렌더링 -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 사용 가이드 팁 -->
+      <aside class="tips-box">
+        <h4 class="tips-title">💡 캘린더 등록 방법</h4>
+        <ul class="tips-list">
+          <li><strong>아이폰/Mac (Apple 캘린더):</strong> 다운로드된 <code>.ics</code> 파일을 탭하여 '모두 추가'를 누르세요.</li>
+          <li><strong>구글 캘린더:</strong> PC 브라우저에서 [설정] &gt; [가져오기 및 내보내기] &gt; [파일 업로드]를 통해 추가할 수 있습니다.</li>
+          <li><strong>갤럭시/안드로이드:</strong> 다운로드된 파일을 탭하면 기본 캘린더 앱에서 일정 가져오기가 바로 실행됩니다.</li>
+        </ul>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-links">
+        <a href="https://github.com/dltkdgns00/Lunar_Calendar" target="_blank" rel="noopener noreferrer">GitHub 저장소</a>
+        <span class="divider">·</span>
+        <a href="https://github.com/dltkdgns00" target="_blank" rel="noopener noreferrer">개발자 GitHub</a>
+      </div>
+      <p class="copyright">MIT License © SangHoon Lee (dltkdgns00)</p>
+    </footer>
+  </div>
+
+  <!-- 토스트 알림 컨테이너 -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- 메인 모듈 실행 -->
+  <script type="module" src="./src/app.js"></script>
 </body>
 
 </html>
