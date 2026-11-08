@@ -56,11 +56,17 @@
         <div class="shared-banner-icon">🎂</div>
         <div class="shared-banner-content">
           <div class="shared-banner-title" id="sharedBannerTitle">공유받은 음력 생일이 도착했습니다!</div>
-          <div class="shared-banner-sub" id="sharedBannerSub">캘린더 일정이 자동으로 다운로드됩니다. 아래 버튼을 눌러 바로 저장할 수도 있습니다.</div>
+          <div class="shared-banner-sub" id="sharedBannerSub">올해 양력 생일 안내</div>
+          <div class="shared-banner-name-row">
+            <label for="bannerNameInput" class="banner-name-label">내 캘린더에 표시할 이름/호칭:</label>
+            <div class="banner-input-wrap">
+              <input type="text" id="bannerNameInput" class="form-input banner-input" placeholder="예: 엄마, 언니, 홍길동">
+              <button type="button" id="bannerDownloadBtn" class="btn btn-primary banner-btn">
+                📥 내 캘린더에 저장
+              </button>
+            </div>
+          </div>
         </div>
-        <button type="button" id="bannerDownloadBtn" class="btn btn-primary banner-btn">
-          📥 캘린더에 바로 저장
-        </button>
       </div>
 
       <form id="lunarForm" novalidate>
@@ -78,6 +84,7 @@
               maxlength="20"
               autocomplete="off"
             >
+            <small class="help-text">💡 가족에게 링크를 공유할 때는 본명(예: 김영희)을 적으면 각자 호칭(엄마, 언니 등)에 맞게 저장하기 편리합니다.</small>
           </div>
         </section>
 

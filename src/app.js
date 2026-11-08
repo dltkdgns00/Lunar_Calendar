@@ -32,6 +32,7 @@ const resetBtn = document.getElementById('resetBtn');
 const sharedBanner = document.getElementById('sharedBanner');
 const sharedBannerTitle = document.getElementById('sharedBannerTitle');
 const sharedBannerSub = document.getElementById('sharedBannerSub');
+const bannerNameInput = document.getElementById('bannerNameInput');
 const bannerDownloadBtn = document.getElementById('bannerDownloadBtn');
 
 const toastContainer = document.getElementById('toastContainer');
@@ -136,15 +137,10 @@ function init() {
   }
   updateInstantSolarDisplay();
 
-  // 만약 공유 링크(?auto=1)로 접속한 경우: 상단 배너 표시 및 자동 다운로드 시도
+  // 만약 공유 링크로 접속한 경우: 상단 배너 표시 (이름 확인 및 원클릭 저장 유도)
   if (hasParams) {
     setupSharedBanner();
-
-    if (isAutoDownload) {
-      setTimeout(() => {
-        handleDownload();
-      }, 600);
-    }
+    showToast(`🎂 ${personNameInput.value.trim() || '가족'}님의 음력 생일이 도착했습니다!\n내 캘린더에 표시할 이름을 확인 후 저장하세요.`, 'info', 4500);
   }
 }
 
@@ -497,21 +493,48 @@ async function copyToClipboard(text, successMsg) {
 }
 
 /**
- * 공유받은 링크로 접속했을 때 상단 배너 설정
+ * 공유받은 링크로 접속했을 때 상단 배너 설정 (호칭/이름 확인 및 즉시 저장)
  */
 function setupSharedBanner() {
   if (!sharedBanner) return;
 
+  const currentYear = new Date().getFullYear();
   const name = personNameInput.value.trim() || '가족';
-  const month = lunarMonthSelect.value;
-  const day = lunarDaySelect.value;
-  const isLeap = isLeapMonthCheckbox.checked ? ' (윤달)' : '';
+  const month = parseInt(lunarMonthSelect.value, 10);
+  const day = parseInt(lunarDaySelect.value, 10);
+  const isLeap = isLeapMonthCheckbox.checked;
+  const leapText = isLeap ? ' (윤달)' : '';
+
+  const thisYearSolar = convertLunarToSolar(currentYear, month, day, isLeap, true);
+  let solarText = '';
+  if (thisYearSolar) {
+    const d = new Date(thisYearSolar.year, thisYearSolar.month - 1, thisYearSolar.day);
+    solarText = `올해 양력 생일은 <strong>${thisYearSolar.year}년 ${thisYearSolar.month}월 ${thisYearSolar.day}일(${DAY_NAMES[d.getDay()]})</strong>입니다.`;
+  }
 
   if (sharedBannerTitle) {
-    sharedBannerTitle.textContent = `🎂 ${name}님의 음력 생일 (${month}월 ${day}일${isLeap})이 도착했습니다!`;
+    sharedBannerTitle.textContent = `🎂 음력 ${month}월 ${day}일${leapText} 생일이 도착했습니다!`;
   }
   if (sharedBannerSub) {
-    sharedBannerSub.textContent = `캘린더 일정이 자동으로 다운로드됩니다. 아래 버튼을 눌러 바로 캘린더에 저장할 수도 있습니다.`;
+    sharedBannerSub.innerHTML = `${solarText} 내 캘린더에 저장할 호칭(이름)을 확인하고 저장하세요.`;
+  }
+  if (bannerNameInput) {
+    bannerNameInput.value = name;
+    bannerNameInput.addEventListener('input', () => {
+      personNameInput.value = bannerNameInput.value;
+      syncTitleWithName();
+      onFormChange();
+    });
+  }
+
+  if (bannerDownloadBtn) {
+    bannerDownloadBtn.onclick = () => {
+      if (bannerNameInput && bannerNameInput.value.trim()) {
+        personNameInput.value = bannerNameInput.value.trim();
+        syncTitleWithName();
+      }
+      handleDownload();
+    };
   }
 
   sharedBanner.classList.remove('hidden');
